@@ -1,34 +1,34 @@
 body {
-    background-color: #f0f8ff;
+    background-color: #fbfbfb;
     font-family: Arial, Helvetica, sans-serif;
     margin: 40px;
   }
   
   h1 {
-    color: #003366;
+    color: #017af3;
     text-align: center;
   }
   
   .about {
-    background-color: #e6f7ff;
+    background-color: #00aeff;
     padding: 10px;
     margin-bottom: 20px;
   }
   
   .skills {
-    background-color: #fff0f5;
+    background-color: #ff0055;
     padding: 10px;
     margin-bottom: 20px;
   }
   
   .projects {
-    background-color: #f5fff0;
+    background-color: #4fc714;
     padding: 10px;
     margin-bottom: 20px;
   }
   
   .contact {
-    background-color: #ffffe0;
+    background-color: #083aff;
     padding: 10px;
     margin-bottom: 20px;
   }
