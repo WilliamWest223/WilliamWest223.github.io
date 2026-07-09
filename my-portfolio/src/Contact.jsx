@@ -3,13 +3,14 @@ import React from 'react';
 export default function Contact() {
   return (
     <section id="contact" className="contact-section">
-      <h2 className="section-title">Get In Touch</h2>
+      <h2 className="section-title"><span>Get In</span> Touch</h2>
       <p className="contact-text">
-        I'm currently looking for software engineering internship opportunities. 
-        Whether you have a question or just want to say hi, I'll try my best to get back to you!
+        I'm a CS student looking for software engineering internship opportunities for
+        summer 2027 — and I'm always up for talking about projects, classes, or code.
+        The fastest way to reach me is email.
       </p>
-      <a href="mailto:your.email@example.com" className="btn-outline">
-        Say Hello
+      <a href="mailto:wwest0708@gmail.com" className="btn-outline">
+        Email Me
       </a>
     </section>
   );
