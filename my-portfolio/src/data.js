@@ -14,8 +14,8 @@ export const AGENT_LIVE_SINCE = '2026-04-06';
 export const HERO_FACTS = [
   ['AI agents', 'built on MCP'],
   ['Local LLMs', 'self-hosted on Linux'],
-  ['Paying client', 'shipped to production'],
-  ['Nightly agent', 'running unattended'],
+  ['Shipped', 'a paying client site'],
+  ['Security', 'red-team & pentest lab'],
 ];
 
 export const FILTERS = [
@@ -46,8 +46,8 @@ export const PROJECTS = [
       'Built to fail safely: on an expired session or any unrecoverable error it texts me over iMessage and stops, with a hard guard that it will never type credentials or attempt a login.',
     ],
     specs: [['Courses tracked', '5'], ['Schedule', 'Daily · 03:00'], ['Runs', 'Unattended'], ['Interface', 'MCP skill']],
-    links: [],
-    note: 'Private — it touches my school account and personal data. I’m glad to screen-share a run.',
+    links: [{ label: 'View code', href: 'https://github.com/WilliamWest223/jarvis-study-agent' }],
+    note: 'The public repo is a sanitized template — my live setup stays private.',
   },
   {
     id: 'local-video',
@@ -67,29 +67,28 @@ export const PROJECTS = [
       'The LLM calls are forced into strict JSON and validated, with a stubbed fallback so the pipeline still produces output when a model is missing.',
     ],
     specs: [['Python', '~1,500 lines'], ['Models', 'All local'], ['Stages', '4'], ['Cloud calls', '0']],
-    links: [],
-    note: 'Private for now — happy to walk through the code.',
+    links: [{ label: 'View code', href: 'https://github.com/WilliamWest223/notes-to-video' }],
   },
   {
     id: 'local-llm-lab',
-    name: 'Linux LLM & security lab',
+    name: 'Local LLM & offensive-security lab',
     kind: 'Self-directed',
     tags: ['ai'],
     size: 'narrow',
-    summary: 'I reflashed an old ThinkPad to Linux and turned it into a private box for running local language models and studying web-application security hands-on.',
+    summary: 'A Linux ThinkPad I reflashed into a private lab for running open-weight language models and practicing web-application security hands-on — on targets I’m allowed to break.',
     role: 'Self-directed',
     date: '2026',
     status: 'Ongoing',
-    stack: ['Linux', 'Local LLMs', 'Web security', 'Adversarial prompting'],
-    visual: { type: 'stat', value: 'On-device', label: 'local models on a Linux ThinkPad — no cloud, no data leaving the box' },
+    stack: ['Linux', 'Local LLMs', 'Jailbreak / red-teaming', 'Prompt injection', 'Web app pentesting'],
+    visual: { type: 'stat', value: 'On-device', label: 'open models + security work on a Linux box I own — nothing leaves it' },
     bullets: [
-      'Wiped and reinstalled Linux on a spare ThinkPad to get a clean, controllable environment for running open-weight models locally.',
-      'Use it as a sandbox to study how LLMs behave under adversarial prompting and where web apps break — the offensive side of the security material from my coursework, on targets I own.',
-      'Pairs with my Computer Security class: I’d rather understand an attack by building it in a lab than only read about it.',
+      'Wiped an old ThinkPad to Linux and set it up to run open-weight and uncensored models locally — studying how an LLM behaves with no hosted safety layer in the way.',
+      'Red-team the models directly: writing jailbreaks and prompt-injection attacks to map where guardrails hold and where they fall over. It’s the fastest way I’ve found to build real intuition for how these systems actually work.',
+      'Practice web-application penetration testing on CTF and practice grounds and on apps I own — authorized targets only — to turn my Computer Security coursework into hands-on exploitation.',
     ],
-    specs: [['Host', 'ThinkPad · Linux'], ['Models', 'Open-weight, local'], ['Scope', 'Lab only']],
+    specs: [['Host', 'ThinkPad · Linux'], ['Models', 'Open-weight / uncensored'], ['Targets', 'CTF + owned, authorized']],
     links: [],
-    note: 'Lab work on hardware and targets I own.',
+    note: 'All of it on authorized targets and hardware I own.',
   },
   {
     id: 'party-town',
@@ -220,6 +219,7 @@ export const PROJECTS = [
 
 export const TOOLBOX = [
   ['AI / agents', 'MCP, Anthropic & OpenAI APIs, local LLMs (Ollama/Llama), prompt engineering, RAG & TF-IDF'],
+  ['Security', 'Web-app pentesting, LLM red-teaming, jailbreak & prompt-injection testing'],
   ['Languages', 'Java, TypeScript, Python, C++, SQL, Bash'],
   ['Frameworks', 'React, Next.js, React Native (Expo), Node/Express, FastAPI, JavaFX'],
   ['Data', 'Postgres, Supabase (RLS), SQLite, Prisma'],

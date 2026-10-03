@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import AgentTerminal from './AgentTerminal';
 import { Flow, Icon, Reveal, Spotlight, TestGrid } from './ui';
 import {
   COURSES, EMAIL, FILTERS, GITHUB, HERO_FACTS, LINKEDIN, PROJECTS, RESUME, TIMELINE, TOOLBOX,
@@ -31,37 +30,33 @@ function Nav() {
 function Hero() {
   return (
     <section className="hero" id="top">
-      <div className="hero-glow" aria-hidden="true" />
+      <div className="hero-aura" aria-hidden="true" />
+      <div className="hero-grid" aria-hidden="true" />
       <div className="hero-inner">
-        <div className="hero-copy">
-          <p className="hero-eyebrow">
-            <span className="status-dot" aria-hidden="true" />
-            Open to SWE internships · Summer 2027
-          </p>
-          <h1>
-            I build <em>AI agents</em> and the software they run on.
-          </h1>
-          <p className="hero-lede">
-            I’m William West, a computer science junior at the University of South Carolina.
-            I ship full-stack products, run language models on my own hardware, and write
-            agents that keep working after I log off — like the one shown here, which files
-            my coursework every night at 3 AM.
-          </p>
-          <div className="hero-actions">
-            <a className="btn btn-primary" href="#work">See my work</a>
-            <a className="btn btn-ghost" href={RESUME} {...ext}><Icon name="file" /> Résumé</a>
-            <a className="btn-icon" href={GITHUB} {...ext} aria-label="GitHub"><Icon name="github" /></a>
-            <a className="btn-icon" href={LINKEDIN} {...ext} aria-label="LinkedIn"><Icon name="linkedin" /></a>
-          </div>
-          <dl className="hero-facts">
-            {HERO_FACTS.map(([k, v]) => (
-              <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
-            ))}
-          </dl>
+        <p className="hero-eyebrow">
+          <span className="status-dot" aria-hidden="true" />
+          Open to SWE internships · Summer 2027
+        </p>
+        <h1 className="hero-title">
+          I build <span className="grad">AI agents</span>
+          <br />and the systems they run on.
+        </h1>
+        <p className="hero-lede">
+          Computer science junior at the University of South Carolina. I ship full-stack
+          products, run language models on my own hardware, and write agents that keep
+          working after I log off.
+        </p>
+        <div className="hero-actions">
+          <a className="btn btn-primary" href="#work">See my work <Icon name="arrow" /></a>
+          <a className="btn btn-ghost" href={RESUME} {...ext}><Icon name="file" /> Résumé</a>
+          <a className="btn-icon" href={GITHUB} {...ext} aria-label="GitHub"><Icon name="github" /></a>
+          <a className="btn-icon" href={LINKEDIN} {...ext} aria-label="LinkedIn"><Icon name="linkedin" /></a>
         </div>
-        <div className="hero-term">
-          <AgentTerminal />
-        </div>
+        <dl className="hero-facts">
+          {HERO_FACTS.map(([k, v]) => (
+            <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
+          ))}
+        </dl>
       </div>
     </section>
   );
