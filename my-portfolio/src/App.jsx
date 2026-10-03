@@ -198,34 +198,39 @@ function Work() {
 function About() {
   return (
     <section className="section about" id="about" aria-labelledby="about-title">
-      <Reveal className="about-copy">
-        <p className="kicker">About</p>
-        <h2 id="about-title">I like knowing how things work one layer down.</h2>
-        <p>
-          I’m in my third year of computer science at USC. Two semesters of software engineering
-          put me on real teams with real requirements: elicitation interviews, UML, feature
-          branches, code review, and test suites that have to pass before anything merges.
-        </p>
-        <p>
-          Lately I’ve been going deep on AI — building tool-using agents on MCP, running
-          open-weight models on my own Linux box, and studying where both models and web apps
-          break. I’d rather understand something by building it than only read about it.
-        </p>
-        <ul className="chips chips-lg" aria-label="Coursework">
-          {COURSES.map((c) => <li key={c}>{c}</li>)}
-        </ul>
-      </Reveal>
-      <Reveal className="toolbox">
-        <h3 className="mini-head">Toolbox</h3>
-        <dl>
-          {TOOLBOX.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
-        </dl>
+      <div className="about-top">
+        <Reveal className="about-copy">
+          <p className="kicker">About</p>
+          <h2 id="about-title">I like knowing how things work one layer down.</h2>
+          <p>
+            I’m in my third year of computer science at USC. Two semesters of software engineering
+            put me on real teams with real requirements: elicitation interviews, UML, feature
+            branches, code review, and test suites that have to pass before anything merges.
+          </p>
+          <p>
+            Lately I’ve been going deep on AI — building tool-using agents on MCP, running
+            open-weight models on my own Linux box, and studying where both models and web apps
+            break. I’d rather understand something by building it than only read about it.
+          </p>
+          <ul className="chips chips-lg" aria-label="Coursework">
+            {COURSES.map((c) => <li key={c}>{c}</li>)}
+          </ul>
+        </Reveal>
+        <Reveal className="toolbox">
+          <h3 className="mini-head">Toolbox</h3>
+          <dl>
+            {TOOLBOX.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
+          </dl>
+        </Reveal>
+      </div>
+      <Reveal className="timeline-wrap">
         <h3 className="mini-head">Timeline</h3>
         <ol className="timeline">
           {TIMELINE.map(([date, what, note]) => (
             <li key={date + what}>
               <time>{date}</time>
-              <div><strong>{what}</strong><span>{note}</span></div>
+              <strong>{what}</strong>
+              <span>{note}</span>
             </li>
           ))}
         </ol>
