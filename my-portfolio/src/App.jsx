@@ -1,217 +1,303 @@
-import Chip from './Chip';
-import { EMAIL, FEATURES, GITHUB, LINKEDIN, PROJECTS, RESUME, REVISIONS, SMALLER } from './data';
+import { useEffect, useRef, useState } from 'react';
+import CommitField from './CommitField';
+import { CountUp, Flow, Icon, Reveal, Spotlight, TestGrid } from './ui';
+import {
+  AGENT_LIVE_SINCE, COURSES, EMAIL, FILTERS, GITHUB, LINKEDIN, PROJECTS, RESUME, TIMELINE, TOOLBOX,
+} from './data';
 
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
+const nightsSince = (iso) => Math.max(0, Math.floor((Date.now() - new Date(`${iso}T03:00:00`)) / 864e5));
 
-function Masthead() {
+function Nav() {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 24);
+    on();
+    window.addEventListener('scroll', on, { passive: true });
+    return () => window.removeEventListener('scroll', on);
+  }, []);
   return (
-    <header className="masthead">
-      <div className="masthead-id">
-        <span className="mono">WW-2028</span>
-        <span className="masthead-title">William West</span>
-      </div>
+    <header className={`nav ${scrolled ? 'is-scrolled' : ''}`}>
+      <a className="nav-name" href="#top">William West</a>
       <nav aria-label="Sections">
-        <a href="#projects">Projects</a>
-        <a href="#history">History</a>
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
         <a href="#contact">Contact</a>
-        <a href={RESUME} {...ext}>Résumé</a>
       </nav>
+      <a className="nav-cta" href={RESUME} {...ext}>Résumé</a>
     </header>
   );
 }
 
 function Hero() {
+  const nights = nightsSince(AGENT_LIVE_SINCE);
+  const stats = [
+    { value: 11816, label: 'lines of Java shipped with a 5-person team' },
+    { value: 300, label: 'JUnit tests on that project' },
+    { value: 9524, label: 'lines of TypeScript across web + mobile' },
+    { value: nights, label: 'nights my Blackboard agent has run since going live' },
+  ];
   return (
-    <section className="hero" aria-labelledby="name">
-      <div className="hero-copy">
-        <h1 id="name">William<br />West</h1>
-        <p className="hero-spec mono">Computer science, University of South Carolina, class of 2028</p>
+    <section className="hero" id="top">
+      <CommitField />
+      <div className="hero-inner">
+        <p className="hero-eyebrow">
+          <span className="status-dot" aria-hidden="true" />
+          Open to software engineering internships · Summer 2027
+        </p>
+        <h1>
+          I build software that <em>keeps running</em> after I log off.
+        </h1>
         <p className="hero-lede">
-          I build full-stack software and the tests that keep it honest. So far: a booking site
-          for a paying client, a campus app with web and mobile clients on one Postgres backend,
-          and an agent that has filed my coursework into Notion every night since April.
+          I’m William West, a computer science junior at the University of South Carolina.
+          I’ve shipped a booking site for a paying client, a campus app with web and mobile
+          clients on one Postgres backend, and an agent that files my coursework into Notion
+          every night at 3&nbsp;AM.
         </p>
-        <p className="availability">
-          <mark>Available</mark> Software engineering internship, summer 2027
-        </p>
-        <div className="actions">
-          <a className="btn btn--solid" href={`mailto:${EMAIL}`}>Email me</a>
-          <a className="btn" href={RESUME} {...ext}>Download résumé (PDF)</a>
+        <div className="hero-actions">
+          <a className="btn btn-primary" href="#work">See my work</a>
+          <a className="btn btn-ghost" href={RESUME} {...ext}><Icon name="file" /> Résumé</a>
+          <a className="btn-icon" href={GITHUB} {...ext} aria-label="GitHub"><Icon name="github" /></a>
+          <a className="btn-icon" href={LINKEDIN} {...ext} aria-label="LinkedIn"><Icon name="linkedin" /></a>
         </div>
+        <dl className="hero-stats">
+          {stats.map((s) => (
+            <div key={s.label}>
+              <dt>{s.label}</dt>
+              <dd><CountUp value={s.value} /></dd>
+            </div>
+          ))}
+        </dl>
       </div>
-      <Chip />
     </section>
   );
 }
 
-function SectionHead({ id, children, note }) {
+function Visual({ v, eager }) {
+  if (v.type === 'shot') {
+    return (
+      <div className="shot">
+        <div className="shot-bar" aria-hidden="true"><i /><i /><i /></div>
+        <img src={v.src} alt={v.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" width="1200" height="750" />
+      </div>
+    );
+  }
+  if (v.type === 'flow') return <Flow nodes={v.nodes} />;
+  if (v.type === 'tests') return <TestGrid total={v.total} found={v.found} />;
   return (
-    <div className="section-head">
-      <h2 id={id}>{children}</h2>
-      {note && <span className="mono">{note}</span>}
+    <div className="stat-visual">
+      <span>{v.value}</span>
+      <small>{v.label}</small>
     </div>
   );
 }
 
-function Overview() {
+function ProjectCard({ p, onOpen, index }) {
   return (
-    <section className="overview" aria-labelledby="features">
-      <div>
-        <SectionHead id="features">Features</SectionHead>
-        <ul className="features">
-          {FEATURES.map((f) => <li key={f}>{f}</li>)}
-        </ul>
-      </div>
-      <div>
-        <SectionHead id="description">Description</SectionHead>
-        <div className="description">
-          <p>
-            I’m a junior at USC studying computer science. Coursework so far: software engineering
-            (two semesters of team projects with real requirements, UML, and code review), C++ down
-            to manual memory management, data structures, Unix, digital logic, and computer security.
-          </p>
-          <p>
-            Outside class I build things I actually use, which is how most of the projects below
-            started. I like knowing how a system works one layer under the code I’m writing, and
-            I’d rather ship something small and real than describe something big.
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Project({ p }) {
-  return (
-    <article className="project" aria-labelledby={p.id}>
-      <header className="project-head">
-        <div>
-          <h3 id={p.id}>{p.name}</h3>
-          <p className="project-summary">{p.summary}</p>
-        </div>
-        <dl className="project-meta mono">
-          <div><dt>Type</dt><dd>{p.kind}</dd></div>
-          <div><dt>Role</dt><dd>{p.role}</dd></div>
-          <div><dt>Date</dt><dd>{p.date}</dd></div>
-          <div><dt>Status</dt><dd><span className="status">{p.status}</span></dd></div>
-        </dl>
-      </header>
-      <div className="project-body">
-        <div>
-          <ul className="bullets">
-            {p.bullets.map((b) => <li key={b}>{b}</li>)}
+    <Spotlight className={`card card-${p.size}`} style={{ '--d': `${(index % 3) * 70}ms` }}>
+      <div className="card-visual"><Visual v={p.visual} /></div>
+      <div className="card-body">
+        <p className="card-kind">{p.kind} · {p.date}</p>
+        <h3>
+          <button type="button" className="card-open" onClick={() => onOpen(p)}>
+            {p.name}
+          </button>
+        </h3>
+        <p className="card-summary">{p.summary}</p>
+        <div className="card-foot">
+          <ul className="chips" aria-label="Stack">
+            {p.stack.slice(0, p.size === 'third' ? 2 : 4).map((s) => <li key={s}>{s}</li>)}
           </ul>
-          <p className="stack mono">{p.stack.join(' · ')}</p>
-        </div>
-        <div className="project-side">
-          <table className="specs">
-            <caption>Characteristics</caption>
-            <tbody>
-              {p.specs.map(([k, v]) => (
-                <tr key={k}><th scope="row">{k}</th><td>{v}</td></tr>
-              ))}
-            </tbody>
-          </table>
-          {p.links.length > 0 && (
-            <p className="links">
-              {p.links.map((l) => <a key={l.href} href={l.href} {...ext}>{l.label} ↗</a>)}
-            </p>
-          )}
-          {p.note && <p className="note">{p.note}</p>}
+          <span className="card-more" aria-hidden="true">Details <Icon name="arrow" /></span>
         </div>
       </div>
-    </article>
+    </Spotlight>
   );
 }
 
-function Projects() {
+function ProjectDialog({ project, onClose }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const d = ref.current;
+    if (project && !d.open) d.showModal();
+    if (!project && d.open) d.close();
+  }, [project]);
   return (
-    <section className="projects" aria-labelledby="projects">
-      <SectionHead id="projects" note={`${PROJECTS.length} featured`}>Projects</SectionHead>
-      {PROJECTS.map((p) => <Project key={p.id} p={p} />)}
-
-      <h3 className="smaller-title">Smaller builds</h3>
-      <ul className="smaller">
-        {SMALLER.map((s) => (
-          <li key={s.name}>
+    <dialog
+      ref={ref}
+      className="dialog"
+      aria-labelledby="dialog-title"
+      onClose={onClose}
+      onClick={(e) => { if (e.target === ref.current) onClose(); }}
+    >
+      {project && (
+        <div className="dialog-inner">
+          <button type="button" className="dialog-close" onClick={onClose} aria-label="Close">
+            <Icon name="close" />
+          </button>
+          <p className="card-kind">{project.kind} · {project.date} · <span className="pill">{project.status}</span></p>
+          <h2 id="dialog-title">{project.name}</h2>
+          <p className="dialog-summary">{project.summary}</p>
+          {project.visual.type === 'shot' && <div className="dialog-visual"><Visual v={project.visual} eager /></div>}
+          <div className="dialog-grid">
             <div>
-              <h4>{s.name}</h4>
-              <p>{s.what}</p>
+              <h3 className="mini-head">What I built</h3>
+              <ul className="bullets">
+                {project.bullets.map((b) => <li key={b}>{b}</li>)}
+              </ul>
             </div>
-            <p className="mono">{s.stack}</p>
-            {s.href ? <a href={s.href} {...ext}>{s.linkLabel} ↗</a> : <span className="mono muted">No public link</span>}
-          </li>
-        ))}
-      </ul>
+            <aside>
+              <h3 className="mini-head">By the numbers</h3>
+              <dl className="specs">
+                {project.specs.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
+                <div><dt>Role</dt><dd>{project.role}</dd></div>
+              </dl>
+              <ul className="chips">{project.stack.map((s) => <li key={s}>{s}</li>)}</ul>
+              {project.links.length > 0 && (
+                <div className="dialog-links">
+                  {project.links.map((l, i) => (
+                    <a key={l.href} className={`btn ${i === 0 ? 'btn-primary' : 'btn-ghost-light'}`} href={l.href} {...ext}>
+                      {l.label} <Icon name="arrow" />
+                    </a>
+                  ))}
+                </div>
+              )}
+              {project.note && <p className="dialog-note">{project.note}</p>}
+            </aside>
+          </div>
+        </div>
+      )}
+    </dialog>
+  );
+}
+
+function Work() {
+  const [filter, setFilter] = useState('all');
+  const [open, setOpen] = useState(null);
+  const shown = PROJECTS.filter((p) => filter === 'all' || p.tags.includes(filter));
+  return (
+    <section className="section" id="work" aria-labelledby="work-title">
+      <div className="section-top">
+        <div>
+          <p className="kicker">Selected work</p>
+          <h2 id="work-title">Things I’ve built and shipped</h2>
+        </div>
+        <div className="filters" role="group" aria-label="Filter projects">
+          {FILTERS.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              aria-pressed={filter === f.id}
+              onClick={() => setFilter(f.id)}
+            >
+              {f.label}
+              <span className="count">
+                {f.id === 'all' ? PROJECTS.length : PROJECTS.filter((p) => p.tags.includes(f.id)).length}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className={`grid ${filter === 'all' ? '' : 'is-filtered'}`} key={filter}>
+        {shown.map((p, i) => <ProjectCard key={p.id} p={p} index={i} onOpen={setOpen} />)}
+      </div>
+      <ProjectDialog project={open} onClose={() => setOpen(null)} />
     </section>
   );
 }
 
-function History() {
+function About() {
   return (
-    <section aria-labelledby="history">
-      <SectionHead id="history" note="Newest first">Revision history</SectionHead>
-      <table className="revisions">
-        <thead>
-          <tr><th scope="col">Date</th><th scope="col">Change</th><th scope="col">Notes</th></tr>
-        </thead>
-        <tbody>
-          {REVISIONS.map(([d, what, notes]) => (
-            <tr key={d + what}><td className="mono">{d}</td><td>{what}</td><td>{notes}</td></tr>
+    <section className="section about" id="about" aria-labelledby="about-title">
+      <Reveal className="about-copy">
+        <p className="kicker">About</p>
+        <h2 id="about-title">I like knowing how things work one layer down.</h2>
+        <p>
+          I’m in my third year of computer science at USC. Two semesters of software engineering
+          put me on real teams with real requirements: elicitation interviews, UML, feature
+          branches, code review, and test suites that have to pass before anything merges.
+        </p>
+        <p>
+          Outside class I build things I actually use, which is how most of the projects above
+          started. I’d rather ship something small and real than describe something big.
+        </p>
+        <ul className="chips chips-lg" aria-label="Coursework">
+          {COURSES.map((c) => <li key={c}>{c}</li>)}
+        </ul>
+      </Reveal>
+      <Reveal className="toolbox">
+        <h3 className="mini-head">Toolbox</h3>
+        <dl>
+          {TOOLBOX.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
+        </dl>
+        <h3 className="mini-head">Timeline</h3>
+        <ol className="timeline">
+          {TIMELINE.map(([date, what, note]) => (
+            <li key={date + what}>
+              <time>{date}</time>
+              <div><strong>{what}</strong><span>{note}</span></div>
+            </li>
           ))}
-        </tbody>
-      </table>
+        </ol>
+      </Reveal>
     </section>
   );
 }
 
 function Contact() {
-  const rows = [
-    ['Email', EMAIL, `mailto:${EMAIL}`, 'Fastest way to reach me'],
-    ['GitHub', 'WilliamWest223', GITHUB, 'Public code for the projects above'],
-    ['LinkedIn', 'william-west', LINKEDIN, ''],
-    ['Résumé', 'One-page PDF', RESUME, 'Updated September 2026'],
-  ];
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.location.href = `mailto:${EMAIL}`;
+    }
+  };
   return (
-    <section className="contact" aria-labelledby="contact">
-      <SectionHead id="contact">Contact</SectionHead>
-      <p className="contact-lede">
-        I’m looking for a software engineering internship for summer 2027, and I’m glad to talk
-        through any project here in more depth.
-      </p>
-      <table className="ordering">
-        <tbody>
-          {rows.map(([k, label, href, note]) => (
-            <tr key={k}>
-              <th scope="row">{k}</th>
-              <td>
-                <a href={href} {...(href.startsWith('mailto') ? {} : ext)}>{label}</a>
-              </td>
-              <td className="muted">{note}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <section className="contact" id="contact" aria-labelledby="contact-title">
+      <div className="contact-inner">
+        <p className="kicker kicker-dark">Contact</p>
+        <h2 id="contact-title">Hiring for summer 2027? Let’s talk.</h2>
+        <p className="contact-lede">
+          Email is the fastest way to reach me. I’m happy to walk through any project here,
+          including the private ones.
+        </p>
+        <div className="contact-actions">
+          <button type="button" className="copy" onClick={copy}>
+            <span className="copy-email">{EMAIL}</span>
+            <span className="copy-label" aria-live="polite">
+              <Icon name={copied ? 'check' : 'copy'} /> {copied ? 'Copied' : 'Copy'}
+            </span>
+          </button>
+          <a className="btn btn-primary" href={`mailto:${EMAIL}`}>Email me</a>
+        </div>
+        <ul className="contact-links">
+          <li><a href={GITHUB} {...ext}><Icon name="github" /> GitHub</a></li>
+          <li><a href={LINKEDIN} {...ext}><Icon name="linkedin" /> LinkedIn</a></li>
+          <li><a href={RESUME} {...ext}><Icon name="file" /> Résumé (PDF)</a></li>
+        </ul>
+      </div>
+      <footer className="footer">
+        <span>© {new Date().getFullYear()} William West</span>
+        <span>Built with React and Vite · Columbia, SC</span>
+      </footer>
     </section>
   );
 }
 
 export default function App() {
   return (
-    <div className="sheet">
-      <a className="skip" href="#projects">Skip to projects</a>
-      <Masthead />
+    <>
+      <a className="skip" href="#work">Skip to projects</a>
+      <Nav />
       <main>
         <Hero />
-        <Overview />
-        <Projects />
-        <History />
+        <Work />
+        <About />
         <Contact />
       </main>
-      <footer className="footer mono">
-        <span>© {new Date().getFullYear()} William West</span>
-        <span>React + Vite · set in Archivo, Hanken Grotesk and IBM Plex Mono</span>
-      </footer>
-    </div>
+    </>
   );
 }
