@@ -9,9 +9,19 @@ export default function Contact() {
         summer 2027 — and I'm always up for talking about projects, classes, or code.
         The fastest way to reach me is email.
       </p>
-      <a href="mailto:wwest0708@gmail.com" className="btn-outline">
-        Email Me
-      </a>
+      <div className="contact-actions">
+        <a href="mailto:wwest0708@gmail.com" className="btn-outline">
+          Email Me
+        </a>
+        <a
+          href="/William_West_Resume.pdf"
+          className="btn-outline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View Resume (PDF)
+        </a>
+      </div>
     </section>
   );
 }

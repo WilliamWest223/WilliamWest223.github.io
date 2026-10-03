@@ -378,3 +378,26 @@
   border-style: dashed;
   opacity: 0.9;
 }
+
+
+/* --- resume CTA rows ----------------------------------------------------- */
+.hero-actions,
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-items: center;
+}
+
+.contact-actions {
+  justify-content: center;
+}
+
+@media (max-width: 560px) {
+  .hero-actions .btn-primary,
+  .hero-actions .btn-outline,
+  .contact-actions .btn-outline {
+    width: 100%;
+    text-align: center;
+  }
+}

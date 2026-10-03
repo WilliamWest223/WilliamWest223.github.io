@@ -18,9 +18,19 @@ export default function Hero() {
           projects in Java, working through C++ down at the pointer level, and I'm
           currently teaching myself full-stack web development — starting with this site.
         </p>
-        <a href="#projects" className="btn-primary">
-          See What I've Built
-        </a>
+        <div className="hero-actions">
+          <a href="#projects" className="btn-primary">
+            See What I've Built
+          </a>
+          <a
+            href="/William_West_Resume.pdf"
+            className="btn-outline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download Resume
+          </a>
+        </div>
       </div>
       <div className="hero-visuals">
         <img src={heroImg} alt="Illustration" className="main-img" />
