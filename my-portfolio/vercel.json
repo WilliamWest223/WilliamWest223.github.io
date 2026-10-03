@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "https://williamwest223.github.io/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "destination": "https://williamwest223.github.io/:path*",
+      "permanent": true
+    }
+  ]
+}
