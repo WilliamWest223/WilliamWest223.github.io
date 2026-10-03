@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import CommitField from './CommitField';
-import { CountUp, Flow, Icon, Reveal, Spotlight, TestGrid } from './ui';
+import AgentTerminal from './AgentTerminal';
+import { Flow, Icon, Reveal, Spotlight, TestGrid } from './ui';
 import {
-  AGENT_LIVE_SINCE, COURSES, EMAIL, FILTERS, GITHUB, LINKEDIN, PROJECTS, RESUME, TIMELINE, TOOLBOX,
+  COURSES, EMAIL, FILTERS, GITHUB, HERO_FACTS, LINKEDIN, PROJECTS, RESUME, TIMELINE, TOOLBOX,
 } from './data';
 
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
-const nightsSince = (iso) => Math.max(0, Math.floor((Date.now() - new Date(`${iso}T03:00:00`)) / 864e5));
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -30,44 +29,39 @@ function Nav() {
 }
 
 function Hero() {
-  const nights = nightsSince(AGENT_LIVE_SINCE);
-  const stats = [
-    { value: 11816, label: 'lines of Java shipped with a 5-person team' },
-    { value: 300, label: 'JUnit tests on that project' },
-    { value: 9524, label: 'lines of TypeScript across web + mobile' },
-    { value: nights, label: 'nights my Blackboard agent has run since going live' },
-  ];
   return (
     <section className="hero" id="top">
-      <CommitField />
+      <div className="hero-glow" aria-hidden="true" />
       <div className="hero-inner">
-        <p className="hero-eyebrow">
-          <span className="status-dot" aria-hidden="true" />
-          Open to software engineering internships · Summer 2027
-        </p>
-        <h1>
-          I build software that <em>keeps running</em> after I log off.
-        </h1>
-        <p className="hero-lede">
-          I’m William West, a computer science junior at the University of South Carolina.
-          I’ve shipped a booking site for a paying client, a campus app with web and mobile
-          clients on one Postgres backend, and an agent that files my coursework into Notion
-          every night at 3&nbsp;AM.
-        </p>
-        <div className="hero-actions">
-          <a className="btn btn-primary" href="#work">See my work</a>
-          <a className="btn btn-ghost" href={RESUME} {...ext}><Icon name="file" /> Résumé</a>
-          <a className="btn-icon" href={GITHUB} {...ext} aria-label="GitHub"><Icon name="github" /></a>
-          <a className="btn-icon" href={LINKEDIN} {...ext} aria-label="LinkedIn"><Icon name="linkedin" /></a>
+        <div className="hero-copy">
+          <p className="hero-eyebrow">
+            <span className="status-dot" aria-hidden="true" />
+            Open to SWE internships · Summer 2027
+          </p>
+          <h1>
+            I build <em>AI agents</em> and the software they run on.
+          </h1>
+          <p className="hero-lede">
+            I’m William West, a computer science junior at the University of South Carolina.
+            I ship full-stack products, run language models on my own hardware, and write
+            agents that keep working after I log off — like the one shown here, which files
+            my coursework every night at 3 AM.
+          </p>
+          <div className="hero-actions">
+            <a className="btn btn-primary" href="#work">See my work</a>
+            <a className="btn btn-ghost" href={RESUME} {...ext}><Icon name="file" /> Résumé</a>
+            <a className="btn-icon" href={GITHUB} {...ext} aria-label="GitHub"><Icon name="github" /></a>
+            <a className="btn-icon" href={LINKEDIN} {...ext} aria-label="LinkedIn"><Icon name="linkedin" /></a>
+          </div>
+          <dl className="hero-facts">
+            {HERO_FACTS.map(([k, v]) => (
+              <div key={k}><dt>{k}</dt><dd>{v}</dd></div>
+            ))}
+          </dl>
         </div>
-        <dl className="hero-stats">
-          {stats.map((s) => (
-            <div key={s.label}>
-              <dt>{s.label}</dt>
-              <dd><CountUp value={s.value} /></dd>
-            </div>
-          ))}
-        </dl>
+        <div className="hero-term">
+          <AgentTerminal />
+        </div>
       </div>
     </section>
   );
@@ -218,8 +212,9 @@ function About() {
           branches, code review, and test suites that have to pass before anything merges.
         </p>
         <p>
-          Outside class I build things I actually use, which is how most of the projects above
-          started. I’d rather ship something small and real than describe something big.
+          Lately I’ve been going deep on AI — building tool-using agents on MCP, running
+          open-weight models on my own Linux box, and studying where both models and web apps
+          break. I’d rather understand something by building it than only read about it.
         </p>
         <ul className="chips chips-lg" aria-label="Coursework">
           {COURSES.map((c) => <li key={c}>{c}</li>)}
