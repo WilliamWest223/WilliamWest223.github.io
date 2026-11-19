@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Flow, Icon, Reveal, Spotlight, TestGrid } from './ui';
 import {
-  COURSES, EMAIL, FILTERS, GITHUB, HERO_FACTS, LINKEDIN, PROJECTS, RESUME, TIMELINE, TOOLBOX,
+  COURSES, EMAIL, FILTERS, GITHUB, HERO_FACTS, PROJECTS, RESUME, TIMELINE, TOOLBOX,
 } from './data';
 
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
@@ -50,7 +50,6 @@ function Hero() {
           <a className="btn btn-primary" href="#work">See my work <Icon name="arrow" /></a>
           <a className="btn btn-ghost" href={RESUME} {...ext}><Icon name="file" /> Résumé</a>
           <a className="btn-icon" href={GITHUB} {...ext} aria-label="GitHub"><Icon name="github" /></a>
-          <a className="btn-icon" href={LINKEDIN} {...ext} aria-label="LinkedIn"><Icon name="linkedin" /></a>
         </div>
         <dl className="hero-facts">
           {HERO_FACTS.map(([k, v]) => (
@@ -270,7 +269,6 @@ function Contact() {
         </div>
         <ul className="contact-links">
           <li><a href={GITHUB} {...ext}><Icon name="github" /> GitHub</a></li>
-          <li><a href={LINKEDIN} {...ext}><Icon name="linkedin" /> LinkedIn</a></li>
           <li><a href={RESUME} {...ext}><Icon name="file" /> Résumé (PDF)</a></li>
         </ul>
       </div>

@@ -5,7 +5,6 @@ import horizonShot from './assets/horizon.jpg';
 export const RESUME = '/William_West_Resume.pdf';
 export const EMAIL = 'wwest0708@gmail.com';
 export const GITHUB = 'https://github.com/WilliamWest223';
-export const LINKEDIN = 'https://linkedin.com/in/william-west';
 
 // The Jarvis agent's first scheduled run; the hero counts nights since.
 export const AGENT_LIVE_SINCE = '2026-04-06';
@@ -13,9 +12,9 @@ export const AGENT_LIVE_SINCE = '2026-04-06';
 // Short, honest proof points for the hero.
 export const HERO_FACTS = [
   ['AI agents', 'built on MCP'],
-  ['Local LLMs', 'self-hosted on Linux'],
+  ['1,500+ tests', 'in one solo project'],
   ['Shipped', 'a paying client site'],
-  ['Security', 'red-team & pentest lab'],
+  ['Security', 'LLM eval & pentest lab'],
 ];
 
 export const FILTERS = [
@@ -28,22 +27,44 @@ export const FILTERS = [
 // `visual` picks the card's artwork: a screenshot, a flow diagram, a test grid, or a stat.
 export const PROJECTS = [
   {
+    id: 'codegames',
+    name: 'CodeGames',
+    kind: 'Personal project',
+    tags: ['web'],
+    size: 'wide',
+    summary: 'A browser platform that teaches Python and JavaScript through games where the code is the game. Learner code runs in the browser, and progress stays on the device unless you sign in to sync.',
+    role: 'Sole developer',
+    date: 'Oct 2026 – now',
+    status: 'Pre-launch',
+    stack: ['TypeScript', 'React', 'Vite', 'Pyodide (WebAssembly)', 'Web Workers', 'Supabase', 'Playwright', 'Vitest'],
+    visual: { type: 'flow', nodes: ['Learner code', 'Web Worker / Pyodide WASM sandbox', 'Level checks', 'Local progress, optional Supabase sync'] },
+    bullets: [
+      '238 levels in each of Python and JavaScript, plus a 13-level DOM side quest and a 13-level defensive-security side quest.',
+      'Untrusted learner code runs client-side: JavaScript in isolated Web Workers, Python in Pyodide with per-run memory isolation and an interrupt buffer that kills runaway loops.',
+      'Offline-first. Progress is local by default, with optional cross-device sync through Supabase magic-link or one-time-code sign-in.',
+      '1,500+ automated tests, including one that solves every level in both languages, Playwright e2e and security suites, and a CI check that fails the build on forbidden DOM and storage sinks.',
+    ],
+    specs: [['Levels', '476 + 26 side-quest'], ['Tests', '1,500+'], ['Runs', 'In the browser'], ['Offline', 'Yes']],
+    links: [{ label: 'Code', href: 'https://github.com/WilliamWest223/codegames' }],
+    note: 'Public mirror of the code; the dev repo is private. Not launched yet: custom domain and launch are pending.',
+  },
+  {
     id: 'jarvis',
     name: 'Jarvis — autonomous study agent',
     kind: 'Personal project',
     tags: ['ai'],
-    size: 'wide',
-    summary: 'An AI agent that runs itself every night at 3 AM: it reads my university LMS through a live browser, reconciles what it finds against a Notion database, writes me a briefing, and texts me if anything breaks.',
+    size: 'narrow',
+    summary: 'An AI agent that runs itself every night at 3 AM: it reads my university LMS through my own signed-in Chrome session, reconciles what it finds against a Notion database, writes me a briefing, and texts me if anything breaks.',
     role: 'Sole developer',
     date: 'Apr 2026 – now',
     status: 'Runs nightly',
     stack: ['Python', 'MCP', 'Chrome automation', 'Notion API', 'iMessage', 'cron'],
-    visual: { type: 'flow', nodes: ['03:00 · cron wakes the agent', 'drives a live Chrome session (MCP)', 'reads the Blackboard gradebook', 'syncs Notion, then texts me'] },
+    visual: { type: 'flow', nodes: ['03:00 · cron wakes the agent', 'works in my signed-in Chrome (MCP)', 'reads the Blackboard gradebook', 'syncs Notion, then texts me'] },
     bullets: [
       'Written as a Model Context Protocol skill — a tool-using agent, not a one-off script. It decides what to do at each step instead of replaying fixed clicks.',
-      'University SSO (Shibboleth) blocks headless scrapers, so the agent drives my own authenticated Chrome over MCP and queries the gradebook API from inside the page — the approach that actually gets through.',
+      'University SSO (Shibboleth) rules out headless scraping, so the agent works inside my own already-signed-in Chrome session over MCP and reads the gradebook API from the page. It never stores, types or sees my credentials.',
       'Does a real delta: it reconciles scraped assignments against a Notion database by name *and* due date, never overwriting pages that already hold my hand-written notes.',
-      'Built to fail safely: on an expired session or any unrecoverable error it texts me over iMessage and stops, with a hard guard that it will never type credentials or attempt a login.',
+      'Built to fail safely: on an expired session or any unrecoverable error it texts me over iMessage and stops, with a hard guard that it never types credentials or attempts a login.',
     ],
     specs: [['Courses tracked', '5'], ['Schedule', 'Daily · 03:00'], ['Runs', 'Unattended'], ['Interface', 'MCP skill']],
     links: [{ label: 'View code', href: 'https://github.com/WilliamWest223/jarvis-study-agent' }],
@@ -71,22 +92,22 @@ export const PROJECTS = [
   },
   {
     id: 'local-llm-lab',
-    name: 'Local LLM & offensive-security lab',
+    name: 'Local LLM security & pentest lab',
     kind: 'Self-directed',
     tags: ['ai'],
-    size: 'narrow',
-    summary: 'A Linux ThinkPad I reflashed into a private lab for running open-weight language models and practicing web-application security hands-on — on targets I’m allowed to break.',
+    size: 'wide',
+    summary: 'A Linux ThinkPad I reflashed into a private lab for evaluating the security of self-hosted open-weight language models and practicing web-application pentesting on targets I’m allowed to test.',
     role: 'Self-directed',
     date: '2026',
     status: 'Ongoing',
     stack: ['Linux', 'Local LLMs', 'Jailbreak / red-teaming', 'Prompt injection', 'Web app pentesting'],
-    visual: { type: 'stat', value: 'On-device', label: 'open models + security work on a Linux box I own — nothing leaves it' },
+    visual: { type: 'stat', value: 'Self-hosted', label: 'LLM security evaluation on a Linux box I own, authorized targets only' },
     bullets: [
-      'Wiped an old ThinkPad to Linux and set it up to run open-weight and uncensored models locally — studying how an LLM behaves with no hosted safety layer in the way.',
-      'Red-team the models directly: writing jailbreaks and prompt-injection attacks to map where guardrails hold and where they fall over. It’s the fastest way I’ve found to build real intuition for how these systems actually work.',
+      'Wiped an old ThinkPad to Linux and set it up to run open-weight models locally, so I can test them without sending anything to a hosted service.',
+      'Evaluate LLM security directly: I write prompt-injection and jailbreak tests against the self-hosted models to map where guardrails hold and where they fail.',
       'Practice web-application penetration testing on CTF and practice grounds and on apps I own — authorized targets only — to turn my Computer Security coursework into hands-on exploitation.',
     ],
-    specs: [['Host', 'ThinkPad · Linux'], ['Models', 'Open-weight / uncensored'], ['Targets', 'CTF + owned, authorized']],
+    specs: [['Host', 'ThinkPad · Linux'], ['Models', 'Open-weight, self-hosted'], ['Targets', 'CTF + owned, authorized']],
     links: [],
     note: 'All of it on authorized targets and hardware I own.',
   },
@@ -115,7 +136,7 @@ export const PROJECTS = [
     name: 'Lewis Lawn Care',
     kind: 'Client work',
     tags: ['web'],
-    size: 'wide',
+    size: 'narrow',
     summary: 'A marketing and booking site I built and shipped solo for a paying lawn-care client in Columbia, SC — landing page through admin dashboard.',
     role: 'Freelance, sole developer',
     date: 'Jul 2026',
@@ -162,7 +183,7 @@ export const PROJECTS = [
     name: 'The Algorithmic Horizon',
     kind: 'ENGL 102',
     tags: ['web'],
-    size: 'third',
+    size: 'wide',
     summary: 'A one-page argument for proactive AI regulation, with live data charts and a Turing-test mini-game.',
     role: 'Sole developer',
     date: 'Apr 2026',
@@ -181,7 +202,7 @@ export const PROJECTS = [
     name: 'CalcTutor & ChemTutor',
     kind: 'Personal project',
     tags: ['web'],
-    size: 'third',
+    size: 'half',
     summary: 'Offline drill apps for Calc II and Chem that name the exact mistake behind a wrong answer and resurface it on a spaced schedule.',
     role: 'Sole developer',
     date: 'Sep 2026',
@@ -200,7 +221,7 @@ export const PROJECTS = [
     name: 'BrainRot StoryTutor',
     kind: 'Personal project',
     tags: ['ai', 'web'],
-    size: 'third',
+    size: 'half',
     summary: 'The browser-native take on notes-to-video: short-form study clips rendered client-side, with LLM and neural-voice as optional upgrades.',
     role: 'Sole developer',
     date: 'Jan 2026',
@@ -223,6 +244,7 @@ export const TOOLBOX = [
   ['Languages', 'Java, TypeScript, Python, C++, SQL, Bash'],
   ['Frameworks', 'React, Next.js, React Native (Expo), Node/Express, FastAPI, JavaFX'],
   ['Data', 'Postgres, Supabase (RLS), SQLite, Prisma'],
+  ['Browser runtime', 'Pyodide / WebAssembly, Web Workers'],
   ['Testing & ops', 'JUnit 5, Vitest, Playwright, Git branching, Vercel'],
 ];
 
@@ -233,6 +255,7 @@ export const COURSES = [
 
 // Newest first.
 export const TIMELINE = [
+  ['Oct 2026', 'CodeGames', 'Browser platform for learning Python and JavaScript, 1,500+ tests'],
   ['Sep 2026', 'CalcTutor & ChemTutor', 'Drill apps for this semester’s Calc II and Chem'],
   ['Jul 2026', 'Lewis Lawn Care', 'First paid client site, shipped to production'],
   ['Apr 2026', 'Party Town + Jarvis agent', 'Web + mobile on one backend; the agent has run nightly since'],

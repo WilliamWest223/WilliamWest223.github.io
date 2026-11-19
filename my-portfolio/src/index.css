@@ -203,7 +203,9 @@ img { display: block; max-width: 100%; }
 .card-wide { grid-column: span 7; }
 .card-narrow { grid-column: span 5; }
 .card-third { grid-column: span 4; }
+.card-half { grid-column: span 6; }
 .grid.is-filtered .card { grid-column: span 6; }
+.grid.is-filtered .card:last-child:nth-child(odd) { grid-column: span 12; }
 
 .spot {
   position: relative; isolation: isolate;
@@ -362,7 +364,7 @@ img { display: block; max-width: 100%; }
 .toolbox dd { color: var(--ink-2); }
 .timeline-wrap { margin-top: clamp(40px, 6vw, 72px); }
 .timeline-wrap .mini-head { margin-bottom: 18px; }
-.timeline { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 24px 20px; }
+.timeline { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 24px 20px; }
 .timeline li { position: relative; border-top: 1px solid var(--line); padding: 20px 14px 0 0; }
 .timeline li::before { content: ''; position: absolute; left: 0; top: -5px; width: 9px; height: 9px; border-radius: 50%; background: var(--card); border: 2px solid var(--amber); }
 .timeline li:first-child::before { background: var(--amber); box-shadow: 0 0 0 4px var(--amber-soft); }
@@ -414,6 +416,7 @@ img { display: block; max-width: 100%; }
   .hero-facts > div:nth-child(3) { border-left: 0; padding-left: 0; }
   .hero-facts > div { padding-bottom: 22px; }
   .card-wide, .card-narrow, .grid.is-filtered .card { grid-column: span 12; }
+  .card-half { grid-column: span 12; }
   .card-third { grid-column: span 6; }
   .card-third:last-child:nth-child(odd) { grid-column: span 12; }
   .about-top { grid-template-columns: 1fr; }
