@@ -3,8 +3,8 @@ import {
   MotionConfig, motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform,
 } from 'motion/react';
 import {
-  AGENT_LIVE_SINCE, AGENT_TZ, COURSES, EMAIL, FLAGSHIPS, GITHUB, HERO_PROOF, INDEX, MAILTO,
-  NIGHT_RUN, PICTURES, RESUME, TIMELINE, TOOLBOX,
+  AGENT_LIVE_SINCE, AGENT_TZ, CODE, COURSES, DIAGRAMS, EMAIL, FLAGSHIPS, GITHUB, HERO_PROOF, INDEX,
+  MAILTO, NIGHT_LOG, NIGHT_RUN, PICTURES, RESUME, TIMELINE, TOOLBOX,
 } from './data';
 
 const ext = { target: '_blank', rel: 'noopener noreferrer' };
@@ -42,10 +42,10 @@ function Rise({ as = 'div', delay = 0, className, children, ...rest }) {
   return (
     <M
       className={className}
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '0px 0px -8% 0px' }}
-      transition={{ duration: 0.7, ease: EASE, delay }}
+      transition={{ duration: 0.6, ease: EASE, delay }}
       {...rest}
     >
       {children}
@@ -53,14 +53,111 @@ function Rise({ as = 'div', delay = 0, className, children, ...rest }) {
   );
 }
 
-function Pic({ k, className, eager, style }) {
-  const p = PICTURES[k];
+// Minimal highlighter for the quoted excerpts: comments, strings, keywords, numbers.
+const KEYWORDS = {
+  ts: 'const|let|new|await|return|if|typeof|this|type|async',
+  js: 'const|let|new|await|return|if|typeof|this|async',
+  sql: 'CREATE|POLICY|ON|FOR|UPDATE|TO|USING|WITH|CHECK|EXISTS|SELECT|FROM|WHERE|AND',
+};
+function highlight(code, lang) {
+  const comment = lang === 'sql' ? '--[^\\n]*' : '\\/\\/[^\\n]*';
+  const re = new RegExp(`(${comment})|('(?:[^'\\\\]|\\\\.)*'|"[^"]*"|\`[^\`]*\`)|\\b(${KEYWORDS[lang]})\\b|\\b(\\d+)\\b`, 'g');
+  const out = [];
+  let last = 0;
+  for (const m of code.matchAll(re)) {
+    if (m.index > last) out.push(code.slice(last, m.index));
+    const cls = m[1] ? 'tk-c' : m[2] ? 'tk-s' : m[3] ? 'tk-k' : 'tk-n';
+    out.push(<span key={m.index} className={cls}>{m[0]}</span>);
+    last = m.index + m[0].length;
+  }
+  out.push(code.slice(last));
+  return out;
+}
+
+function Chrome({ title, children }) {
   return (
-    <motion.img
-      className={className}
-      src={p.src} width={p.w} height={p.h} alt={p.alt}
-      loading={eager ? 'eager' : 'lazy'} decoding="async" style={style}
-    />
+    <div className="win-bar">
+      <span className="dots" aria-hidden="true"><i /><i /><i /></span>
+      <span className="win-title">{title}</span>
+      {children}
+    </div>
+  );
+}
+
+function Code({ file, lang, code, className = '' }) {
+  return (
+    <figure className={`win code ${className}`} data-ui>
+      <Chrome title={file} />
+      <pre><code>{highlight(code, lang)}</code></pre>
+    </figure>
+  );
+}
+
+function Terminal({ title, lines, className = '' }) {
+  return (
+    <figure className={`win term ${className}`} data-ui>
+      <Chrome title={title} />
+      <pre>{lines.map(([k, t], i) => (
+        <span key={i} className={`ln ln-${k === '$' ? 'cmd' : k === 'ok' ? 'ok' : k === '!' ? 'warn' : 'out'}`}>
+          <span className="ln-k">{k === 'ok' ? 'ok' : k}</span>{t}{'\n'}
+        </span>
+      ))}</pre>
+    </figure>
+  );
+}
+
+function Diagram({ d }) {
+  const byId = Object.fromEntries(d.nodes.map((n) => [n.id, n]));
+  return (
+    <figure className="win diagram" data-ui>
+      <svg viewBox="0 0 640 220" role="img" aria-label={d.label}>
+        <defs>
+          <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 8 4 0 8z" className="dg-head" />
+          </marker>
+        </defs>
+        {d.edges.map(([a, b]) => {
+          const s = byId[a]; const t = byId[b];
+          const x1 = s.x + s.w; const y1 = s.y + 20; const x2 = t.x; const y2 = t.y + 20;
+          const mx = (x1 + x2) / 2;
+          return <path key={a + b} className="dg-edge" d={`M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2 - 2} ${y2}`} markerEnd="url(#arrow)" />;
+        })}
+        {d.nodes.map((n) => (
+          <g key={n.id} className={n.hot ? 'dg-node is-hot' : 'dg-node'}>
+            <rect x={n.x} y={n.y} width={n.w} height="40" rx="7" />
+            <text x={n.x + 12} y={n.y + 17} className="dg-t">{n.t}</text>
+            <text x={n.x + 12} y={n.y + 32} className="dg-s">{n.s}</text>
+          </g>
+        ))}
+      </svg>
+      <figcaption>{d.note}</figcaption>
+    </figure>
+  );
+}
+
+function Browser({ k, eager }) {
+  const p = PICTURES[k];
+  const host = k === 'lawncare' ? 'lawncare-com-iota.vercel.app' : 'airegulationadvocacy.vercel.app';
+  return (
+    <figure className="win browser" data-ui>
+      <Chrome title={host} />
+      <img src={p.src} width={p.w} height={p.h} alt={p.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+    </figure>
+  );
+}
+
+function Bar() {
+  return (
+    <nav className="bar" aria-label="Sections">
+      <a className="wordmark" href="#top"><span className="mark" aria-hidden="true" />William West</a>
+      <span className="bar-links">
+        <a href="#night">03:00 run</a>
+        <a href="#work">Work</a>
+        <a href="#index">Index</a>
+        <a href="#about">About</a>
+      </span>
+      <a className="bar-action" href={RESUME} {...ext}>Résumé</a>
+    </nav>
   );
 }
 
@@ -68,123 +165,126 @@ function Hero({ clock }) {
   const ref = useRef(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
-  const scale = useTransform(scrollYProgress, [0, 1], reduce ? [1, 1] : [1.14, 1]);
-  const y = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [0, -60]);
+  const backY = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [0, -40]);
+  const frontY = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [0, -110]);
   return (
     <header className="hero" id="top" ref={ref}>
-      <div className="hero-photo" aria-hidden="true">
-        <Pic k="racks" eager style={{ scale, y }} />
+      <Bar />
+      <div className="hero-grid">
+        <div className="hero-copy">
+          <motion.p className="status" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: EASE }}>
+            <span className="pulse" aria-hidden="true" />
+            Jarvis live for {clock.nights} nights. Next run in {clock.h}h {clock.m}m.
+          </motion.p>
+          <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: EASE, delay: 0.05 }}>
+            My code runs while I sleep.
+          </motion.h1>
+          <Rise as="p" className="lede" delay={0.15}>
+            I’m William West, a CS junior at the University of South Carolina (May 2028). I build agents that
+            run themselves at 03:00, sandboxes for untrusted code and sites for paying clients. Seeking Summer
+            2027 SWE and AI internships.
+          </Rise>
+          <Rise className="actions" delay={0.25}>
+            <a className="btn" href={RESUME} {...ext}>Open the résumé</a>
+            <a className="btn btn-ghost" href={MAILTO}>{EMAIL}</a>
+            <a className="link" href={GITHUB} {...ext}>GitHub ↗</a>
+          </Rise>
+          <Rise as="dl" className="proof" delay={0.35}>
+            <div><dt>{clock.nights}</dt><dd>nights since the agent went live</dd></div>
+            {HERO_PROOF.map(([n, l]) => <div key={l}><dt>{n}</dt><dd>{l}</dd></div>)}
+          </Rise>
+        </div>
+        <div className="hero-stack">
+          <motion.div className="stack-back" style={{ y: backY }} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: EASE, delay: 0.2 }}>
+            <Code {...CODE.codegames[0]} />
+          </motion.div>
+          <motion.div className="stack-front" style={{ y: frontY }} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: EASE, delay: 0.4 }}>
+            <Terminal
+              title="codegames — test"
+              lines={[
+                ['$', 'npm test'],
+                ['>', 'unit · every level solved in Python and JavaScript'],
+                ['>', 'playwright e2e · security suites · DOM sink check'],
+                ['ok', '1,500+ passed'],
+              ]}
+            />
+          </motion.div>
+        </div>
       </div>
-      <nav className="bar" aria-label="Sections">
-        <a className="wordmark" href="#top">William West</a>
-        <span className="bar-links">
-          <a href="#night">The 03:00 run</a>
-          <a href="#work">Work</a>
-          <a href="#index">Index</a>
-          <a href="#about">About</a>
-        </span>
-        <a className="bar-action" href={RESUME} {...ext}>Résumé</a>
-      </nav>
-      <motion.div
-        className="card"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, ease: EASE }}
-      >
-        <h1 className="card-title"><span>William</span> <span>West</span></h1>
-        <Rise className="card-facts" delay={0.15}>
-          <p>CS at the University of South Carolina, May 2028</p>
-          <p>Seeking Summer 2027 SWE and AI internships</p>
-          <p>Columbia, SC</p>
-        </Rise>
-        <Rise as="p" className="card-statement" delay={0.25}>
-          I build software that keeps working after I log off: an agent that runs itself at 03:00,
-          a sandbox for untrusted code, and sites for paying clients.
-        </Rise>
-        <Rise as="dl" className="proof" delay={0.35}>
-          <div><dt>{clock.nights}</dt><dd>nights since the agent went live</dd></div>
-          {HERO_PROOF.map(([n, l]) => <div key={l}><dt>{n}</dt><dd>{l}</dd></div>)}
-        </Rise>
-        <Rise className="card-actions" delay={0.45}>
-          <a className="btn" href={RESUME} {...ext}>Open the résumé</a>
-          <a className="link" href={MAILTO}>{EMAIL}</a>
-          <a className="link" href={GITHUB} {...ext}>GitHub</a>
-        </Rise>
-      </motion.div>
     </header>
   );
 }
 
-// The signature: one night of the Jarvis agent. The clock pins while the steps of the run pass.
+// The signature: one night of the Jarvis agent, typed out by the scroll while the terminal pins.
+const LOG_LINES = NIGHT_LOG.flatMap((block, step) => block.map(([k, t]) => ({ k, t, step })));
+const LOG_CHARS = LOG_LINES.reduce((n, l) => n + l.t.length, 0);
+
 function NightRun({ clock }) {
   const ref = useRef(null);
   const reduce = useReducedMotion();
-  const [active, setActive] = useState(0);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
-  const fill = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const clockScale = useTransform(scrollYProgress, [0, 0.2, 1], reduce ? [1, 1, 1] : [0.88, 1, 1]);
+  const [typed, setTyped] = useState(reduce ? LOG_CHARS : 0);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.6', 'end end'] });
   useMotionValueEvent(scrollYProgress, 'change', (v) => {
-    setActive(Math.min(NIGHT_RUN.length - 1, Math.max(0, Math.floor(v * NIGHT_RUN.length))));
+    setTyped(Math.round(Math.min(1, v * 1.12) * LOG_CHARS));
   });
+  const shown = reduce ? LOG_CHARS : typed;
+  let left = shown;
+  let active = 0;
+  const lines = [];
+  for (const l of LOG_LINES) {
+    if (left <= 0) break;
+    const n = Math.min(l.t.length, left);
+    lines.push({ ...l, text: l.t.slice(0, n), done: n === l.t.length });
+    left -= n;
+    active = l.step;
+  }
   return (
     <section className="night" id="night" ref={ref} aria-labelledby="night-title">
       <div className="night-pin">
-        <h2 id="night-title" className="sr-only">While you sleep, it runs</h2>
-        <motion.p className="clock" aria-label="03:00, when the agent runs" style={{ scale: clockScale }}>
-          03:00
-        </motion.p>
-        <div className="night-meta">
-          <p className="night-now" aria-live="polite">
-            <motion.span key={active} initial={reduce ? false : { y: 18, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.35, ease: EASE }}>
-              {NIGHT_RUN[active].head}
-            </motion.span>
-          </p>
-          <div className="track" aria-hidden="true"><motion.span style={{ scaleX: reduce ? 1 : fill }} /></div>
-          <p className="night-count">Night {clock.nights} since launch. Next run in {clock.h}h {clock.m}m.</p>
-        </div>
+        <h2 id="night-title" className="night-title">03:00. Nobody is awake.</h2>
+        <figure className="win term run" data-ui aria-label="The Jarvis agent's nightly run, as a log">
+          <Chrome title="jarvis — assignment-tracker">
+            <span className="run-state">{shown >= LOG_CHARS ? 'exit 0' : 'running'}</span>
+          </Chrome>
+          <pre className="run-log">
+            <span className="ln ln-dim">{`night ${clock.nights} since 2026-04-06 · next run in ${clock.h}h ${clock.m}m\n`}</span>
+            {lines.map((l, i) => (
+              <span key={i} className={`ln ln-${l.k === '$' ? 'cmd' : l.k === 'ok' ? 'ok' : l.k === '!' ? 'warn' : 'out'}`}>
+                <span className="ln-k">{l.k}</span>{l.text}
+                {!l.done && <span className="caret" aria-hidden="true" />}{'\n'}
+              </span>
+            ))}
+            {shown === 0 && <span className="caret" aria-hidden="true" />}
+          </pre>
+          <div className="run-track" aria-hidden="true">
+            {NIGHT_RUN.map((s, i) => <span key={s.head} className={lines.length && i <= active ? 'on' : undefined} />)}
+          </div>
+        </figure>
       </div>
       <ol className="night-steps">
-        {NIGHT_RUN.map((s) => <Step key={s.head} step={s} reduce={reduce} />)}
+        {NIGHT_RUN.map((s, i) => (
+          <li key={s.head} className={lines.length && i === active ? 'step is-active' : 'step'}>
+            <h3>{s.head}</h3>
+            <p>{s.body}</p>
+          </li>
+        ))}
       </ol>
     </section>
   );
 }
 
-function Step({ step, reduce }) {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'center center'] });
-  const y = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [90, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], reduce ? [1, 1] : [0.94, 1]);
+function Flagship({ f, flip }) {
   return (
-    <li className="step" ref={ref}>
-      <motion.div style={{ y, scale }}>
-        <h3>{step.head}</h3>
-        <p>{step.body}</p>
-      </motion.div>
-    </li>
-  );
-}
-
-function Flagship({ f }) {
-  const ref = useRef(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  const y = useTransform(scrollYProgress, [0, 1], reduce ? ['0%', '0%'] : ['-8%', '8%']);
-  return (
-    <article className="flagship" id={f.id} aria-labelledby={`${f.id}-name`}>
-      <figure className="panel" ref={ref}>
-        <Pic k={f.picture} style={{ y }} />
-        <figcaption className="panel-row">
-          <span>{f.date}</span>
-          <h3 id={`${f.id}-name`}>{f.name}</h3>
-          <span>{f.fact}</span>
-        </figcaption>
-      </figure>
-      <div className="case">
-        <Rise as="p" className="case-pitch">{f.pitch}</Rise>
-        <div className="case-body">
+    <article className={flip ? 'flagship is-flip' : 'flagship'} id={f.id} aria-labelledby={`${f.id}-name`}>
+      <header className="fs-head">
+        <Rise as="h3" id={`${f.id}-name`}>{f.name}</Rise>
+        <Rise as="p" className="fs-meta" delay={0.06}>{f.date} · {f.fact}</Rise>
+        <Rise as="p" className="fs-pitch" delay={0.1}>{f.pitch}</Rise>
+      </header>
+      <div className="fs-grid">
+        <div className="case">
           <Rise as="p" delay={0.06}>{f.problem}</Rise>
-          <Rise as="ul" delay={0.12}>{f.built.map((b) => <li key={b}>{b}</li>)}</Rise>
+          <Rise as="ul" className="built" delay={0.12}>{f.built.map((b) => <li key={b}>{b}</li>)}</Rise>
           <Rise className="case-call" delay={0.18}>
             <h4>The hard call</h4>
             <p>{f.decision}</p>
@@ -195,8 +295,12 @@ function Flagship({ f }) {
           <Rise as="p" delay={0.3}>{f.proof}</Rise>
           <p className="case-small">{f.stack}{f.note ? `. ${f.note}` : ''}</p>
           <p className="case-links">
-            {f.links.map((l) => <a key={l.href} className="link" href={l.href} {...ext}>{l.label}</a>)}
+            {f.links.map((l) => <a key={l.href} className="link" href={l.href} {...ext}>{l.label} ↗</a>)}
           </p>
+        </div>
+        <div className="artifacts">
+          <Rise delay={0.1}><Diagram d={DIAGRAMS[f.art]} /></Rise>
+          {CODE[f.art].map((c, i) => <Rise key={c.file} delay={0.18 + i * 0.08}><Code {...c} /></Rise>)}
         </div>
       </div>
     </article>
@@ -207,7 +311,7 @@ function Work() {
   return (
     <section className="work" id="work" aria-labelledby="work-title">
       <Rise as="h2" id="work-title" className="section-title">Three systems, built solo</Rise>
-      {FLAGSHIPS.map((f) => <Flagship key={f.id} f={f} />)}
+      {FLAGSHIPS.map((f, i) => <Flagship key={f.id} f={f} flip={i % 2 === 1} />)}
     </section>
   );
 }
@@ -217,9 +321,11 @@ function Index() {
   const current = INDEX.find((i) => i.id === active);
   return (
     <section className="index" id="index" aria-labelledby="index-title">
-      <div className="index-pic" aria-hidden="true">
-        <motion.div key={current.picture} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
-          <Pic k={current.picture} />
+      <div className="index-pic" aria-live="polite">
+        <motion.div key={current.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: EASE }}>
+          {current.picture
+            ? <Browser k={current.picture} />
+            : <Terminal title={`${current.id} — facts`} lines={current.readout.map(([k, v]) => ['>', `${k.padEnd(13)}${v}`])} />}
         </motion.div>
       </div>
       <div className="index-list">
@@ -242,7 +348,7 @@ function Index() {
               <p>{item.body}</p>
               {item.links.length > 0 && (
                 <p className="case-links">
-                  {item.links.map((l) => <a key={l.href} className="link" href={l.href} {...ext}>{l.label}</a>)}
+                  {item.links.map((l) => <a key={l.href} className="link" href={l.href} {...ext}>{l.label} ↗</a>)}
                 </p>
               )}
             </motion.li>
@@ -256,57 +362,41 @@ function Index() {
 function About() {
   return (
     <section className="about" id="about" aria-labelledby="about-title">
-      <figure className="about-pic">
-        <Pic k="horseshoe" />
-      </figure>
       <div className="about-copy">
         <Rise as="h2" id="about-title" className="section-title">Columbia, SC, class of 2028</Rise>
         <Rise as="p" className="about-lead" delay={0.06}>
           B.S. Computer Science at the University of South Carolina, a junior graduating May 2028.
           Coursework: {COURSES.join(', ')}.
         </Rise>
-        <Rise as="dl" className="toolbox" delay={0.12}>
-          {TOOLBOX.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
+        <Rise as="ol" className="timeline" delay={0.12}>
+          {TIMELINE.map(([when, what, detail]) => (
+            <li key={when + what}>
+              <span className="tl-when">{when}</span>
+              <span className="tl-what">{what}</span>
+              <span className="tl-detail">{detail}</span>
+            </li>
+          ))}
         </Rise>
       </div>
-      <Rise as="ol" className="timeline">
-        {TIMELINE.map(([when, what, detail]) => (
-          <li key={when + what}>
-            <span className="tl-when">{when}</span>
-            <span className="tl-what">{what}</span>
-            <span className="tl-detail">{detail}</span>
-          </li>
-        ))}
+      <Rise as="dl" className="toolbox" delay={0.12}>
+        {TOOLBOX.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}
       </Rise>
     </section>
   );
 }
 
 function Footer() {
-  const credits = Object.values(PICTURES).filter((p) => p.credit);
   return (
     <footer className="close" id="contact">
       <div className="close-top">
-        <div>
-          <Rise as="h2" className="close-title">Summer 2027. Let’s build.</Rise>
-          <Rise delay={0.1}><a className="btn btn-inverse" href={MAILTO}>Email William</a></Rise>
-        </div>
-        <Rise as="ul" className="close-links" delay={0.15}>
-          <li><a className="link" href={MAILTO}>{EMAIL}</a></li>
-          <li><a className="link" href={GITHUB} {...ext}>GitHub</a></li>
-          <li><a className="link" href={RESUME} {...ext}>Résumé (PDF)</a></li>
+        <Rise as="h2" className="close-title">Summer 2027. Let’s build.</Rise>
+        <Rise className="close-actions" delay={0.1}>
+          <a className="btn" href={MAILTO}>Email William</a>
+          <a className="link" href={GITHUB} {...ext}>GitHub ↗</a>
+          <a className="link" href={RESUME} {...ext}>Résumé (PDF) ↗</a>
         </Rise>
       </div>
-      <p className="credits">
-        Pictures, shown as the world around the work:{' '}
-        {credits.map((p, i) => (
-          <span key={p.credit.page}>
-            <a href={p.credit.page} {...ext}>“{p.credit.title}”</a> by {p.credit.by},{' '}
-            <a href={p.credit.licenseUrl} {...ext}>{p.credit.license}</a>{i < credits.length - 1 ? '; ' : '.'}
-          </span>
-        ))}
-      </p>
-      <p className="wordmark-big" aria-hidden="true">William West</p>
+      <p className="fine">William West · {EMAIL} · Built with React, Vite and Motion.</p>
     </footer>
   );
 }

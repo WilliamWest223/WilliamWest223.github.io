@@ -2,9 +2,6 @@
 // Every number here is a fact from that file; framing may be bold, numbers may not move.
 import lawncareShot from './assets/lawncare.jpg';
 import horizonShot from './assets/horizon.jpg';
-import racks from './assets/found/racks.jpg';
-import punchedCard from './assets/found/punched-card.jpg';
-import horseshoe from './assets/found/horseshoe.jpg';
 
 export const RESUME = '/William_West_Resume.pdf';
 export const EMAIL = 'wwest0708@gmail.com';
@@ -16,23 +13,8 @@ export const AGENT_LIVE_SINCE = '2026-04-06';
 // The agent's cron fires at 03:00 Columbia, SC time.
 export const AGENT_TZ = 'America/New_York';
 
-// Found pictures of the world around the work (never the work itself). Credited in the footer.
+// Real screenshots of shipped sites, shown inside browser frames.
 export const PICTURES = {
-  racks: {
-    src: racks, w: 1600, h: 1067,
-    alt: 'Rows of server racks in a dark room, lit by small blue status lights',
-    credit: { title: 'NOIRLab HQ Server Racks (6V6A0404-CC)', by: 'NOIRLab/NSF/AURA/T. Slovinský', license: 'CC BY 4.0', licenseUrl: 'https://creativecommons.org/licenses/by/4.0/', page: 'https://commons.wikimedia.org/w/index.php?curid=134195917' },
-  },
-  card: {
-    src: punchedCard, w: 1600, h: 772,
-    alt: 'An old IBM punched card, a line of program code punched as holes in rows of digits',
-    credit: { title: 'Punched card', by: 'Mutatis mutandis', license: 'CC BY 2.5', licenseUrl: 'https://creativecommons.org/licenses/by/2.5/', page: 'https://commons.wikimedia.org/w/index.php?curid=1406914' },
-  },
-  horseshoe: {
-    src: horseshoe, w: 1600, h: 973,
-    alt: 'The Horseshoe at the University of South Carolina: oak trees over a lawn, students sitting in the shade',
-    credit: { title: 'University of South Carolina Horseshoe', by: 'Dfscgt21', license: 'CC BY-SA 3.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0/', page: 'https://commons.wikimedia.org/w/index.php?curid=17391811' },
-  },
   lawncare: { src: lawncareShot, w: 1200, h: 750, alt: 'Lewis Lawn Care home page: a dark green hero reading “Lawns worth lingering on.” with quote and booking buttons' },
   horizon: { src: horizonShot, w: 1200, h: 750, alt: 'The Algorithmic Horizon title page with a serif headline and a dot-grid illustration' },
 };
@@ -61,7 +43,7 @@ export const FLAGSHIPS = [
     pitch: 'A browser-side code execution sandbox wrapped in a game.',
     date: 'Oct 2026 – now',
     fact: 'Pre-launch',
-    picture: 'card',
+    art: 'codegames',
     problem: 'Teaching Python and JavaScript means running code a stranger typed. CodeGames runs it in the browser, where the code is the game, and keeps progress on the device unless the learner signs in to sync.',
     built: [
       '238 levels in each of Python and JavaScript, plus a 13-level DOM side quest and a 13-level defensive-security side quest.',
@@ -80,7 +62,7 @@ export const FLAGSHIPS = [
     pitch: 'Autonomous agent infrastructure that runs unattended every night.',
     date: 'Apr 2026 – now',
     fact: 'Daily at 03:00',
-    picture: 'racks',
+    art: 'jarvis',
     problem: 'Five courses, one LMS behind university SSO, and assignments scattered across it. I wanted the state of my semester reconciled before I wake up, without handing a bot my password.',
     built: [
       'An MCP skill: a tool-using agent that chooses its next step, not a one-off script.',
@@ -99,7 +81,7 @@ export const FLAGSHIPS = [
     pitch: 'A multi-tenant platform with database-enforced access control.',
     date: 'Apr 2026',
     fact: 'Web + mobile',
-    picture: 'horseshoe',
+    art: 'party-town',
     problem: 'A campus-events platform has students, venues and admins who must never see each other’s data, across a web app and a native mobile app.',
     built: [
       'One TypeScript monorepo ships a Next.js web app and an Expo mobile app against a single Supabase Postgres database.',
@@ -113,7 +95,7 @@ export const FLAGSHIPS = [
   },
 ];
 
-// The rest of the work. `picture` keys into PICTURES.
+// The rest of the work. `picture` keys into PICTURES; `readout` is shown when there is no screenshot.
 export const INDEX = [
   {
     id: 'lewis-lawn-care', name: 'Lewis Lawn Care', meta: 'Paid client · Jul 2026', picture: 'lawncare',
@@ -121,17 +103,17 @@ export const INDEX = [
     links: [{ label: 'Visit site', href: 'https://lawncare-com-iota.vercel.app' }, { label: 'Code', href: 'https://github.com/WilliamWest223/lawncare.com' }],
   },
   {
-    id: 'method-men', name: 'Interview Prep MM', meta: '5-person team · 2026', picture: 'horseshoe',
+    id: 'method-men', name: 'Interview Prep MM', meta: '5-person team · 2026', readout: [['tests', '300'], ['java', '11,816 lines'], ['commits', '212 (team)'], ['team', '5 people']],
     body: 'Technical-interview practice platform, CSCE 247. I authored the core domain model the team built on; my JUnit suites caught three real defects before the demo. 300 tests, 11,816 lines of Java, 212 team commits.',
     links: [{ label: 'Watch demo', href: 'https://youtu.be/7nblbT_5eB0' }, { label: 'Code', href: 'https://github.com/WilliamWest223/method_men_interview_prep' }],
   },
   {
-    id: 'local-video', name: 'Notes-to-video engine', meta: 'Local-first AI · 2025', picture: 'racks',
+    id: 'local-video', name: 'Notes-to-video engine', meta: 'Local-first AI · 2025', readout: [['llm', 'Llama 3.1 via Ollama'], ['image', 'Stable Diffusion'], ['voice', 'XTTS v2'], ['video', 'MoviePy'], ['cloud calls', '0']],
     body: 'Four-stage pipeline that turns study notes into a narrated video with zero cloud calls: Llama 3.1 via Ollama, Stable Diffusion, XTTS v2 and MoviePy behind FastAPI, with LLM output forced into validated JSON.',
     links: [{ label: 'Code', href: 'https://github.com/WilliamWest223/notes-to-video' }],
   },
   {
-    id: 'llm-lab', name: 'LLM security lab', meta: 'Self-directed · 2026', picture: 'racks',
+    id: 'llm-lab', name: 'LLM security lab', meta: 'Self-directed · 2026', readout: [['host', 'ThinkPad, Linux'], ['models', 'open-weight, local'], ['tests', 'prompt injection, jailbreaks'], ['targets', 'CTF and owned only']],
     body: 'A ThinkPad reflashed to Linux running open-weight models locally. I write prompt-injection and jailbreak tests to map where guardrails hold, and practise web-app pentesting on CTF and owned, authorized targets only.',
     links: [],
   },
@@ -141,12 +123,12 @@ export const INDEX = [
     links: [{ label: 'Visit site', href: 'https://airegulationadvocacy.vercel.app' }],
   },
   {
-    id: 'calctutor', name: 'CalcTutor & ChemTutor', meta: 'Zero dependencies · Sep 2026', picture: 'card',
+    id: 'calctutor', name: 'CalcTutor & ChemTutor', meta: 'Zero dependencies · Sep 2026', readout: [['lessons', '27'], ['dependencies', '0'], ['network', 'offline']],
     body: 'Offline drill apps for Calc II and Chem that diagnose the exact mistake behind a wrong answer and resurface it on a spaced schedule. 27 lessons dated to the live lecture calendar.',
     links: [{ label: 'Code', href: 'https://github.com/WilliamWest223/calctutor' }],
   },
   {
-    id: 'brainrot', name: 'BrainRot StoryTutor', meta: 'Browser-native · Jan 2026', picture: 'card',
+    id: 'brainrot', name: 'BrainRot StoryTutor', meta: 'Browser-native · Jan 2026', readout: [['canvas', '1080×1920'], ['frame rate', '30 fps'], ['beats', 'TF-IDF, no LLM required']],
     body: 'Short-form study clips rendered client-side on a 1080×1920 canvas at 30 fps. A TF-IDF pipeline pulls story beats and captions with no LLM required; LLM and neural voice are optional upgrades.',
     links: [],
   },
@@ -177,3 +159,106 @@ export const TIMELINE = [
   ['2025', 'Notes-to-video engine', 'Full generative stack on my own hardware'],
   ['Aug 2024', 'Started at USC', 'B.S. Computer Science, expected May 2028'],
 ];
+
+// The 03:00 run as a log, one block per NIGHT_RUN step. Paths and calls come from the skill file
+// (jarvis-study-agent/skill/assignment-tracker.md); no counts beyond the facts above.
+export const NIGHT_LOG = [
+  [['$', 'cron 0 3 * * *  →  claude skill assignment-tracker'], ['ok', 'agent awake · no human watching']],
+  [['>', 'mcp chrome: tabs_context_mcp { createIfEmpty: true }'], ['>', 'navigate <BLACKBOARD_BASE_URL>/ultra/course'], ['ok', 'session already signed in · no credentials handled']],
+  [['>', 'GET /learn/api/public/v2/courses/{id}/gradebook/columns?limit=200'], ['ok', '5 courses read from inside the page']],
+  [['>', 'notion: diff by name + due date'], ['ok', 'new rows added · pages with notes left untouched']],
+  [['ok', 'daily briefing written'], ['!', 'on expired session: iMessage operator, then stop']],
+];
+
+// Short excerpts quoted verbatim from the real repos (file paths in `file`).
+export const CODE = {
+  codegames: [
+    {
+      file: 'apps/web/src/engine/host.ts', lang: 'ts', code:
+`this.interrupt = new Int32Array(new SharedArrayBuffer(4));
+worker.postMessage({ type: 'interrupt-buffer', buffer: this.interrupt });
+
+// Ask Python to stop (SIGINT); keep the worker if it answers in time.
+Atomics.store(interrupt, 0, 2);`,
+    },
+    {
+      file: 'apps/web/src/engine/py.worker.ts', lang: 'ts', code:
+`if (message.type === 'interrupt-buffer') {
+  // Python checks this flag while it runs: the host sets it to 2 (SIGINT) to stop a runaway loop.
+  (await pyodide).setInterruptBuffer(message.buffer);
+  return;
+}`,
+    },
+  ],
+  jarvis: [
+    {
+      file: 'skill/assignment-tracker.md', lang: 'js', code:
+`const layout = document.querySelector('bb-base-layout');
+const $http = angular.element(layout).injector().get('$http');
+Promise.all(courses.map(c =>
+  $http.get(\`/learn/api/public/v2/courses/\${c.id}/gradebook/columns?limit=200&fields=id,name,due,grading\`)
+    .then(r => ({ ...c, items: r.data.results || [] }))
+    .catch(() => ({ ...c, items: [] }))
+)).then(r => { window.__gradebook = r; });`,
+    },
+  ],
+  'party-town': [
+    {
+      file: 'supabase/migrations/20260410020359_initial_schema.sql', lang: 'sql', code:
+`CREATE POLICY "orgs_update_own"
+  ON public.organizations FOR UPDATE
+  TO authenticated
+  USING (owner_id = auth.uid())
+  WITH CHECK (owner_id = auth.uid());
+
+CREATE POLICY "orgs_update_verification_admin"
+  ON public.organizations FOR UPDATE
+  TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.profiles
+      WHERE id = auth.uid() AND role = 'super_admin'
+    )
+  );`,
+    },
+  ],
+};
+
+// Architecture diagrams: nodes on a 640×220 canvas, edges by node id. `hot` marks the boundary that matters.
+export const DIAGRAMS = {
+  codegames: {
+    label: 'CodeGames runtime: learner code never leaves the browser',
+    nodes: [
+      { id: 'ed', x: 20, y: 90, w: 130, t: 'Editor', s: 'learner code' },
+      { id: 'host', x: 230, y: 90, w: 150, t: 'Host', s: 'nonce · timeout' },
+      { id: 'js', x: 470, y: 30, w: 150, t: 'Web Worker', s: 'JavaScript', hot: true },
+      { id: 'py', x: 470, y: 150, w: 150, t: 'Pyodide worker', s: 'Python · WASM', hot: true },
+    ],
+    edges: [['ed', 'host'], ['host', 'js'], ['host', 'py']],
+    note: 'server-side execution: none',
+  },
+  jarvis: {
+    label: 'Jarvis nightly run: cron to agent to signed-in Chrome to Notion',
+    nodes: [
+      { id: 'cron', x: 20, y: 90, w: 110, t: 'cron', s: '03:00 daily' },
+      { id: 'mcp', x: 170, y: 90, w: 130, t: 'MCP skill', s: 'chooses next step' },
+      { id: 'chrome', x: 340, y: 30, w: 140, t: 'Chrome', s: 'already signed in', hot: true },
+      { id: 'bb', x: 500, y: 30, w: 120, t: 'Blackboard', s: 'gradebook API' },
+      { id: 'notion', x: 340, y: 150, w: 140, t: 'Notion', s: 'diff, not overwrite' },
+      { id: 'imsg', x: 500, y: 150, w: 120, t: 'iMessage', s: 'on error: stop' },
+    ],
+    edges: [['cron', 'mcp'], ['mcp', 'chrome'], ['chrome', 'bb'], ['mcp', 'notion'], ['notion', 'imsg']],
+    note: 'credentials stored: none',
+  },
+  'party-town': {
+    label: 'Party Town: two clients, one database that enforces every role',
+    nodes: [
+      { id: 'web', x: 20, y: 30, w: 150, t: 'Next.js web', s: 'students · venues' },
+      { id: 'app', x: 20, y: 150, w: 150, t: 'Expo mobile', s: 'React Native' },
+      { id: 'types', x: 245, y: 90, w: 150, t: 'Shared types', s: 'generated from schema' },
+      { id: 'db', x: 470, y: 90, w: 150, t: 'Postgres RLS', s: 'student · venue · admin', hot: true },
+    ],
+    edges: [['web', 'types'], ['app', 'types'], ['types', 'db']],
+    note: 'access control lives in the database',
+  },
+};
